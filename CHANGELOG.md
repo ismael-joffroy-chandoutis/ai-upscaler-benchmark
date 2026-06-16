@@ -7,6 +7,16 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is date-anchored: a `MINOR` bump means new tools or a re-run of the
 methodology, a `PATCH` bump means corrections and re-verification of existing entries.
 
+## [0.3.1] - 2026-06-16
+
+### Changed
+- Image side brought up to the video side's precision on Topaz: named the exact fal endpoint
+  (`fal-ai/topaz/upscale/image`, the Gigapixel engine) and the `model` choice (High Fidelity V2 /
+  Standard V2 faithful, Redefine / Recovery V2 / Wonder generative), with the per-image price
+  (~$8/100 at 4K, $0.16 at 8K). Clarified which provider serves which Topaz model (fal / Topaz
+  first-party API / Ideogram / Krea).
+- Added an image-economics note: for one-off stills the decision is quality and license, not price.
+
 ## [0.3.0] - 2026-06-16
 
 ### Added

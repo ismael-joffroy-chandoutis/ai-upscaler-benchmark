@@ -72,7 +72,7 @@ recommendations below.
 | **Recraft Crisp** | deterministic | **$0.40** | cheapest; clean, no hallucination |
 | **fal SeedVR2** | SeedVR2 | **$0.83** | best $/quality; up to 10K |
 | Ideogram | native | $6 | style-preserving 2x |
-| Topaz Gigapixel API | Gigapixel | $8-12 | faithful premium |
+| Topaz Gigapixel (fal `topaz/upscale/image` or Topaz API) | High Fidelity V2 (faithful) / Redefine (generative) | $8 (fal, 4K) - 12 | the Topaz stills look; pick the model |
 | fal Crystal | face model | $13 | portraits |
 | Magnific | Precision/Creative | $16 | premium reinvention |
 | fal Clarity | open SD1.5 | $25 | you pay for hosting an open model |
@@ -80,6 +80,15 @@ recommendations below.
 
 **Cheapest credible provider:** video 4K = **WaveSpeed** (SeedVR2, open model, $3/min); image =
 **fal** (SeedVR2 $0.83/100, or Recraft Crisp $0.40 for deterministic).
+
+**Image economics differ from video.** Stills are one-offs, not sequences. Locally, GAN/ESRGAN is
+sub-second and even SUPIR (minutes per still) is fine because you only run a handful of hero stills,
+so on the fleet image upscaling is effectively free. In the cloud the absolute cost is trivial too
+(a few dollars per 100). So for stills the decision is **quality and license, not price**:
+SUPIR / Flux-tile (non-commercial) or HAT / DRCT / SeeSR (commercial-clean) locally; **Topaz
+Gigapixel on fal** (High Fidelity V2 faithful / Redefine generative, ~$8/100) or **Magnific
+Precision** for the turnkey hero still; **fal SeedVR2** ($0.83/100) or **Recraft Crisp** ($0.40/100)
+for cheap commercial batch.
 
 ---
 

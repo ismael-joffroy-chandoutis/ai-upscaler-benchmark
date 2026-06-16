@@ -47,8 +47,8 @@ is the real control surface, per tool.
 
 | Use-case | Best LOCAL (5090) | Best API / cloud | Why |
 |---|---|---|---|
-| **Cinema hero still, quality-max** | **SUPIR** (v0F model, low s_churn), or **Flux-tile** (jasperai) | **Magnific Precision**, **Topaz Gigapixel API**, or **Replicate SUPIR** | Best photoreal detail rebuild on a single soft AI still. Both SUPIR and Flux-dev are non-commercial: cinema/auteur use, not the studio. |
-| **Faithful, zero new hallucination** | **ControlNet Tile (SDXL)** at low denoise, or **HAT / DRCT** (commercial-clean) | **Topaz Gigapixel API** ($8-12/100), **Recraft Crisp** ($0.40/100), **Ideogram** ($6/100) | Adds resolution without inventing identity. Tile at denoise 0.2-0.4 cleans AI artifacts without re-drawing. |
+| **Cinema hero still, quality-max** | **SUPIR** (v0F model, low s_churn), or **Flux-tile** (jasperai) | **Magnific Precision**, **Topaz Gigapixel on fal** (Redefine model for soft AI), or **Replicate SUPIR** | Best photoreal detail rebuild on a single soft AI still. Both SUPIR and Flux-dev are non-commercial: cinema/auteur use, not the studio. |
+| **Faithful, zero new hallucination** | **ControlNet Tile (SDXL)** at low denoise, or **HAT / DRCT** (commercial-clean) | **Topaz Gigapixel on fal** (High Fidelity V2, $8/100), **Recraft Crisp** ($0.40/100), **Ideogram** ($6/100) | Adds resolution without inventing identity. Tile at denoise 0.2-0.4 cleans AI artifacts without re-drawing. |
 | **Per-frame video (image tool on a sequence)** | **CCSR-v2** (seed-stable, less flicker) or one-step **OSEDiff/AdcSR** | **fal SeedVR2 image** ($0.83/100) | If you must use an image tool on frames, pick the most temporally stable. Better: use a real video tool. |
 | **Cheap batch stills** | **Real-ESRGAN / Real-CUGAN** via TensorRT (12.7 fps verified on 5090), commercial-clean models only | **fal SeedVR2** ($0.83/100) or **Recraft Crisp** ($0.40/100) | Sub-second, nearly free locally. Avoid the non-commercial community models (UltraSharp). |
 | **Anime / stylized** | **Real-CUGAN** (conservative mode) | **Ideogram** (style-preserving) | Built for line art, tunable denoise, will not photoreal-ify a 2D look. |
@@ -225,7 +225,8 @@ Crisp, Ideogram native, and SeedVR2 (open but conveniently hosted).
 | **fal SeedVR2 image** | SeedVR2 (open) | **~$0.83** | high | cheap-fast |
 | **Recraft Crisp** (via fal) | proprietary deterministic | **$0.40** | med-high | cheap-fast |
 | **Ideogram Upscale** (native) | proprietary, style-preserving | **$6** | med-high | cheap-fast |
-| **Topaz Gigapixel API** | proprietary GAN | **$8-12** | high | balanced |
+| **fal Topaz image** (`fal-ai/topaz/upscale/image`) | Gigapixel engine: **High Fidelity V2** faithful / **Redefine** generative | **$8** (4K, <=24MP) | high | balanced |
+| **Topaz first-party API** | same Gigapixel / Bloom / Wonder, credits | **$8-12** | high | balanced |
 | **fal Crystal** | proprietary face model | **~$13** | high (faces) | balanced |
 | **Recraft Creative** | proprietary generative | **~$13.50** | medium | balanced |
 | **Magnific** (in-Freepik) | proprietary | **~$16** | high (Precision) | quality-tier |
@@ -248,6 +249,15 @@ $99 / Business $299 per month** (2,500 / 6,500 / 20,000 credits, no rollover, ~1
 Recraft Crisp is **platform-dependent**: $0.004/image on fal but ~$0.044/run on Eachlabs, so cite
 the platform with the price. An earlier "Magnific scored 4.6/5 on AI images" figure was a
 fabrication from a secondary page and has been struck.
+
+**Topaz for stills, by provider and exact model (the part that was vague):** on **fal** the endpoint
+is `fal-ai/topaz/upscale/image` (the Gigapixel engine); you choose the `model` parameter:
+**High Fidelity V2** or **Standard V2** for faithful (no invention), **Redefine / Recovery V2 /
+Wonder** for generative fill on soft AI frames. Price ~**$0.08 per 4K still (<=24 MP) = $8/100**,
+$0.16 at 8K. The same Gigapixel/Bloom/Wonder models are on Topaz's **first-party API** (credits,
+~$8-12/100), resold by **Ideogram** (marked up to ~$24/100) and bundled flat-fee in **Krea**. So
+"Topaz on fal for image" = the **Gigapixel** engine with your chosen model, ~$8/100 — the cheapest
+Topaz-stills path, and you pick faithful vs generative explicitly.
 
 ---
 
