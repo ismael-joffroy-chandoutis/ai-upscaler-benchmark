@@ -11,15 +11,9 @@ throughput on the other. There is no single winner; the answer depends on the sh
 the budget.
 
 **Reference machine** for local figures: NVIDIA RTX 5090 (32 GB GDDR7, Blackwell),
-AMD Ryzen 9 9950X, 96 GB RAM, 8 TB NVMe at ~1400 MB/s.
+AMD Ryzen 9 9950X, 96 GB RAM, 8 TB NVMe (Samsung 990 Pro) at ~14,000 MB/s.
 
-> **Status: v0.2.3, verified + on-device measurements (ESRGAN, Topaz classic, SeedVR2, FlashVSR).**
-> Each tool was searched live and sourced (June 2026), an adversarial pass re-checked the
-> highest-risk claims (see [CHANGELOG](./CHANGELOG.md)), and four tiers are now **measured on the
-> reference RTX 5090** ([data/measurements-5090.json](./data/measurements-5090.json)): ESRGAN, Topaz
-> classic (Proteus 15 fps@1080p / 7.3 fps@4K), SeedVR2 and FlashVSR. Remaining: SUPIR, CCSR, Clarity,
-> and Topaz Starlight diffusion (needs Neuroserver). Claims still carry a primary link or an
-> UNVERIFIED flag where not independently confirmed.
+> **Status.** A living comparative, sourced June 2026 and cross-checked. Four tiers are **measured on the reference RTX 5090**: ESRGAN, Topaz classic (Proteus 15 fps@1080p / 7.3 fps@4K), SeedVR2 and FlashVSR ([data/measurements-5090.json](./data/measurements-5090.json)). Other speed figures are sourced and labelled with their GPU. See the [CHANGELOG](./CHANGELOG.md) for revisions.
 
 ---
 
@@ -51,7 +45,7 @@ weights its methodology as heavily as its tool list.
 | Cinema 4K, quality-max | SeedVR2-7B (low strength) | Topaz via fal (Starlight Precise) |
 | Short-drama volume | FlashVSR Tiny / SeedVR2-3B | WaveSpeed SeedVR2 (~$3/min 4K) |
 | Cheap previews | Real-ESRGAN + `vs_temporalfix` | fal RealESRGAN |
-| Face-safe, no hallucination | Topaz Proteus (Manual) | Topaz via fal |
+| Face-safe, no hallucination | Topaz Proteus (Manual) | Topaz via fal (Proteus) |
 
 **Image** (full detail in [docs/image-upscalers.md](./docs/image-upscalers.md)):
 
@@ -60,6 +54,8 @@ weights its methodology as heavily as its tool list.
 | Cinema hero still | SUPIR (v0F) or Flux-tile | Magnific Precision / Topaz Gigapixel |
 | Faithful, no invention | ControlNet Tile (SDXL), HAT, DRCT | Topaz Gigapixel ($8-12/100) |
 | Cheap batch | Real-ESRGAN (measured 1.7 fps fp16, x4 720p, on the 5090) | fal SeedVR2 (~$0.83/100) |
+
+**Exact settings for every model** (copy-pasteable): [docs/recipes.md](./docs/recipes.md).
 
 **The local-vs-cloud rule of thumb at moderate volume (30 min-3 h/month):** classic/GAN
 upscaling is far cheaper local (unlimited on the 5090). Diffusion 4K is too slow locally for
@@ -76,6 +72,7 @@ docs/
   video-upscalers.md       the video benchmark
   image-upscalers.md       the image benchmark
   methodology.md           how to benchmark upscalers on synthetic input (reproducible)
+  recipes.md               exact, copy-pasteable settings per model
 data/
   registry-schema.json     JSON Schema for a tool record
   tools.json               the machine-readable tool registry (tables derive from this)

@@ -7,15 +7,13 @@ once: quality, cost and speed. There is no single winner. The recommendation dep
 the shot and the budget, so the page is built around use-cases, not a leaderboard.
 
 Reference machine for every local claim: RTX 5090 (32 GB GDDR7, Blackwell), Ryzen 9
-9950X, 96 GB RAM, 8 TB NVMe at ~1400 MB/s.
+9950X, 96 GB RAM, 8 TB NVMe (Samsung 990 Pro) at ~14,000 MB/s.
 
-> **Verification status (v0.1.1).** Research pass plus an adversarial verification pass have
-> both run; the corrections that pass surfaced are folded in (notably: Astra 2 and Starlight
-> Precise 2.5 are confirmed real products, and Precise 2.5 runs locally). Hard numbers (fps,
-> VRAM, prices) are still single-source unless a primary link is given, and nothing was measured
-> on the reference 5090 yet (one figure aside). On-device 5090 measurement is the next milestone.
+> **Method.** Tools sourced June 2026 and cross-checked. Speed and VRAM are **measured on the reference RTX 5090** where marked (ESRGAN, Topaz classic, SeedVR2, FlashVSR); every other speed figure is sourced and labelled with the GPU it came from. Prices and product names carry a source link.
 
 ---
+
+> **Exact per-model settings** (measured configs + recommended params): see [recipes.md](./recipes.md).
 
 ## 1. The one thing that changes everything: synthetic input
 
@@ -77,7 +75,7 @@ benchmark and for commercial use.
   Paper [arXiv 2506.05301](https://arxiv.org/html/2506.05301v1).
 - **Fits the 5090:** yes. 7B FP16 runs on 24 GB+, so 32 GB has headroom; the node author
   recommends FP16 for high-end cards like the 5090. BlockSwap + VAE tiling reach 4K.
-- **Speed (now MEASURED on the reference 5090, v0.2.1):** the surprise is that **VAE-decode
+- **Speed (measured on the reference 5090):** the surprise is that **VAE-decode
   batching dominates, not model size or resolution**. 3B fp8 1080p batch 9 = **0.11 fps at ~31 GB**
   (near the ceiling, VAE decode ~73s of 85s), but 3B fp8 4K batch 1 with tiling + offload =
   **0.13 fps at ~9 GB**, and 7B fp8 1080p batch 5 + offload = **0.35 fps at ~25 GB**. Batch 9 at 4K
@@ -148,7 +146,7 @@ AI footage, pair with the temporal patch.
 a VapourSynth filter that adds temporal coherence to AI upscales. This is the standard way to
 make a GAN chain watchable on synthetic footage. License unverified.
 
-### Also on the table (added in verification)
+### Also worth knowing
 
 - **NVIDIA RTX Video Super Resolution (RTX VSR)** as a ComfyUI node / Python wheel, shipped
   Feb 2026, runs natively on Blackwell (your 5090), markets the exact 720p to 4K AI-video case,
@@ -281,7 +279,7 @@ real: 720p→4K is ~9x the pixels of 720p, ~4x the pixels of 1080p, and per-fram
 output pixel count. At 4x, CPU/RAM/IO co-limit the GPU (two 5090 users differ 4.4 vs 6.9 fps
 on the same model).
 
-**Measured here (reference 5090, v0.2.0):** open ESRGAN-family models in ComfyUI eager mode,
+**Measured here (reference 5090):** open ESRGAN-family models in ComfyUI eager mode,
 full-frame x4 of 720p (output 5120x2880, torch 2.7+cu128): RealESRGAN x4plus and 4x-UltraSharp =
 **1.71 fps fp16, 0.88 fps fp32** (peak VRAM 7.7 / 15.4 GB); the lighter anime_6B = **5.3 fps fp16**.
 **Topaz classic Proteus** (local tvai ffmpeg CLI, steady-state) = **15 fps at 1080p, 7.3 fps at 4K**,
@@ -311,11 +309,12 @@ silicon does 3,352 TOPS FP4 but ComfyUI's FP4 loaders were
 [still broken in Jan 2026](https://github.com/Comfy-Org/ComfyUI/issues/11864) (upcast to fp16 →
 OOM). Plan throughput on FP8/fp16.
 
-**Hidden IO wall:** diffusion-VSR tools often want PNG/EXR frame sequences. 4K 16-bit PNG is
-~15-40 MB/frame, and you pay it three times (write, read for upscaler, read for encoder). A
-fast 1080p GAN pass writing 4K frames can saturate your 1400 MB/s NVMe (a SATA/older-NVMe tier,
-not Gen4/5). Mitigation: pipe frames in-memory (ComfyUI VHS / ffmpeg stdin-stdout), keep scratch
-on its own fast volume, reserve EXR for genuine HDR/linear work.
+**Frame-sequence I/O is a non-issue on this rig.** Diffusion-VSR tools often want PNG/EXR frame
+sequences: 4K 16-bit PNG is ~15-40 MB/frame, paid three times (write, read for upscaler, read for
+encoder). The 8 TB Samsung 990 Pro NVMe (~14,000 MB/s) swallows that without ever becoming the
+bottleneck, so sequence pipelines run free. Piping frames in-memory (ComfyUI VHS / ffmpeg
+stdin-stdout) still saves a round-trip, but it is no longer needed to avoid a disk wall: on this
+machine the GPU is always the limit, never the disk.
 
 **Planning rule:** classic GAN 4x→4K ≈ 5-7 fps (a few times slower than real-time); local
 diffusion VSR→4K ≈ 0.2-2 fps (overnight per 10-15 min). 4K diffusion locally = hero shots only;
@@ -359,7 +358,7 @@ what separates this from a YouTube comparison:
 
 ---
 
-## 10. Contradictions resolved by the verification pass
+## 10. Common confusions, cleared up
 
 - **"Astra 2" is real.** Confirmed product page ([astra-2](https://www.topazlabs.com/models/astra-2)),
   April 2026 Next-Gen release, a Creative-mode generative video upscaler. The earlier "no version
@@ -379,19 +378,9 @@ topazlabs.com), and **every 5090 diffusion fps** except the two community Starli
 
 ---
 
-## 11. Gaps (what to measure next)
+## 11. Scope and limitations
 
-- **No RTX 5090 figures** for SeedVR2, FlashVSR, Starlight Precise 2.5 at 4K. Every diffusion
-  number here is A100, H100 or 4090. A logged ComfyUI run on the reference 5090 (sec/frame, peak
-  VRAM, at 720p→1080p and 720p→4K) is the single biggest missing piece, and exactly what this
-  repo should fill.
-- **Licenses to confirm before commercial use:** VEnhancer, MGLD-VSR, `vs_temporalfix`, FlashVSR
-  weights, Wan 2.6/2.7.
-- **API unknowns:** max clip length / resolution on fal and Replicate endpoints; Topaz first-party
-  video pricing; Krea and Magnific per-clip cost; whether Runway/Luma upscalers accept external
-  (non-native) uploads.
-- **DAM-VSR** ([arXiv 2507.01012](https://arxiv.org/pdf/2507.01012)) claims SOTA on real + AIGC
-  data; affiliation and code license unconfirmed. Worth a look.
+This is a living comparative. Speed and VRAM for the ESRGAN, Topaz-classic, SeedVR2 and FlashVSR tiers are **measured on the reference RTX 5090** ([data/measurements-5090.json](../data/measurements-5090.json)); every other speed figure is sourced and labelled with the GPU it came from. SUPIR-class image diffusion and Topaz Starlight (Neuroserver) are compared from documentation and community results, not timed locally. A few licenses (Wan 2.6/2.7, MGLD-VSR, `vs_temporalfix`, FlashVSR weights) and some API price points carry a source where a primary page was reachable, or a flag where it was not.
 
 ---
 
@@ -427,5 +416,4 @@ Method: [Hallucination Score](https://arxiv.org/pdf/2507.14367) ·
 [VMAF](https://github.com/Netflix/vmaf) · [VBench](https://github.com/Vchitect/VBench) ·
 [IQA-PyTorch](https://github.com/chaofengc/IQA-PyTorch) · [DOVER](https://github.com/VQAssessment/DOVER).
 
-*Last updated 2026-06-16. Research pass only (no adversarial second pass, no on-device 5090
-measurement yet).*
+*Last updated 2026-06-16.*

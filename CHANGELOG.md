@@ -7,6 +7,20 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is date-anchored: a `MINOR` bump means new tools or a re-run of the
 methodology, a `PATCH` bump means corrections and re-verification of existing entries.
 
+## [0.2.4] - 2026-06-16
+
+### Changed
+- Corrected the reference NVMe to ~14,000 MB/s (Samsung 990 Pro 8TB), not 1400. The
+  frame-sequence I/O analysis is updated: on this rig the GPU is always the limit, never the disk.
+- De-cluttered the public docs: the "Gaps / what to measure next" sections are now tight "Scope
+  and limitations" notes, and internal-process phrasing was removed. This is a comparative, not a
+  to-do list.
+- Named the model on every "Topaz via fal" recommendation (Starlight Precise 2.5 / Proteus / Gaia 2).
+
+### Added
+- `docs/recipes.md`: exact, copy-pasteable settings per model (measured configs + recommended
+  params) for both video and image.
+
 ## [0.2.3] - 2026-06-16
 
 ### Added (Topaz classic tier measured on the RTX 5090)

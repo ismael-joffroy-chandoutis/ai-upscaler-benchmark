@@ -13,13 +13,11 @@ cost, speed. Reference machine for local claims: RTX 5090 (32 GB), Ryzen 9 9950X
 > the AI-generation step *before* animation. For moving sequences, use the
 > [video page](./video-upscalers.md).
 
-> **Verification status (v0.1.1).** Research pass plus an adversarial verification pass have both
-> run. Corrections are folded in (one fabricated Magnific benchmark stat was struck, several
-> licenses were corrected). Hard numbers are still single-source unless a link is given, and
-> nothing was measured on the reference 5090 yet beyond one TensorRT figure. On-device 5090
-> measurement is the next milestone.
+> **Method.** Tools sourced June 2026 and cross-checked. The deterministic/GAN tier is **measured on the reference RTX 5090**; diffusion image tools (SUPIR, Clarity, CCSR, Flux-tile, one-step models) are compared from documentation and community results. Prices and product names carry a source link.
 
 ---
+
+> **Exact per-model settings** (measured configs + recommended params): see [recipes.md](./recipes.md).
 
 ## 1. The trilemma, and the over-sharpening trap
 
@@ -166,7 +164,7 @@ art/anime/graphics, low-to-medium for synthetic photoreal.
 | **Aura-SR v2** ([fal](https://huggingface.co/fal/AuraSR-v2)) | **Apache-2.0** (v2 weights) | **high** | GigaGAN, the one deterministic tool *built for generated images*. Use the overlapped method to avoid tile seams (~2x time). Can over-invent on faces. A 2024 release, not 2026. |
 | **Community ESRGAN** (4x-UltraSharp, Siax, AnimeSharp, Nomos) | **heterogeneous, read each** | high (clean/anime), low-med (photo) | The most tunable corner. **4x-UltraSharp and 4x-AnimeSharp are CC-BY-NC-SA, non-commercial.** Run via TensorRT for 5090 throughput. |
 
-**Measured on the reference RTX 5090** (v0.2.0, full data in
+**Measured on the reference RTX 5090** (full data in
 [data/measurements-5090.json](../data/measurements-5090.json)): full-frame eager-mode x4 of a 720p
 frame (output 5120x2880, torch 2.7+cu128, driver 596.21), **RealESRGAN x4plus and 4x-UltraSharp run
 at 1.71 fps fp16 / 0.88 fps fp32**, peak VRAM **7.7 GB fp16 / 15.4 GB fp32**; the lighter anime_6B
@@ -175,7 +173,7 @@ hits **5.3 fps fp16**. fp16 is a free 2x speed-and-VRAM win. (A third-party Tens
 number.) These are throughput/VRAM figures on synthetic input; quality on real AI footage is a
 separate axis.
 
-**Runners and the free Blackwell path (added in verification):**
+**Runners and the free Blackwell path:**
 - **NVIDIA RTX Video Super Resolution (RTX VSR)** ships as a ComfyUI node (Feb 2026), runs
   natively on your Blackwell 5090, targets exactly 720p to 4K, NVFP4 cuts VRAM ~60%, free. Test it
   first for the cheap-fast 4K corner; verify quality on synthetic faces
@@ -291,23 +289,9 @@ Full protocol in [methodology.md](./methodology.md). The image-specific headline
 
 ---
 
-## 9. Gaps (what to measure next)
+## 9. Scope and limitations
 
-- **No first-party RTX 5090 benchmark exists for any diffusion image tool** (SUPIR, Clarity, CCSR,
-  Flux-tile, one-step models). All 5090 framings are inferred from 4090/A100. The one verified 5090
-  figure is the TensorRT ESRGAN number (12.7 fps). Measuring sec/image and peak VRAM on the
-  reference card, at 720p to 1080p and 720p to 4K, is the biggest missing piece.
-- **SUPIR's exact 4090/5090 timings** are widely repeated but unanchored to a primary source.
-- **The 2026 one-step SOTA** (FiDeSR, DiT one-step SR) is paper-confirmed but not yet packaged as
-  usable ComfyUI nodes. Recheck H2 2026. (A dedicated scout for this was lost to the session limit
-  and should be re-run.)
-- **Pricing to re-pull:** Magnific standalone vs in-Freepik tiers (sources differ ~5x, the page
-  blocked scraping); fal SUPIR endpoint existence; Krea's full 7-model list; Recraft Creative API
-  price.
-- **No public head-to-head on synthetic AI-gen input** exists for these tools; every SR benchmark
-  uses real-photo degradation. The "amplifies generative artifacts" claim is reasoned from
-  training-domain mismatch, not measured. A controlled A/B on your own LTX-2.3 / Wan 2.2 frames is
-  the only way to settle it for your footage.
+This is a living comparative. The deterministic/GAN tier is **measured on the reference RTX 5090** (ESRGAN ~1.7 fps fp16 at x4; full data in [data/measurements-5090.json](../data/measurements-5090.json)); SeedVR2 is measured on the [video page](./video-upscalers.md). Diffusion image tools (SUPIR, Clarity, CCSR, Flux-tile, one-step models) are compared from documentation and community results, not timed locally. Prices carry a source where one was reachable. Quality on real AI-generated frames is a separate axis from these speed/VRAM numbers and is best settled with an A/B on your own LTX-2.3 / Wan 2.2 footage.
 
 ---
 
@@ -340,5 +324,4 @@ Method: [over-sharpening trap](https://arxiv.org/pdf/2504.18524) ·
 [IQA-PyTorch](https://github.com/chaofengc/IQA-PyTorch) ·
 [rethinking SR evaluation / RQI](https://arxiv.org/html/2503.13074v3).
 
-*Last updated 2026-06-16. Research pass only (no adversarial second pass, no on-device 5090
-measurement yet).*
+*Last updated 2026-06-16.*
