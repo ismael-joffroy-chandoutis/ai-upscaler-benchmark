@@ -56,6 +56,8 @@ weights its methodology as heavily as its tool list.
 | Cheap batch | Real-ESRGAN (measured 1.7 fps fp16, x4 720p, on the 5090) | fal SeedVR2 (~$0.83/100) |
 
 **Exact settings for every model** (copy-pasteable): [docs/recipes.md](./docs/recipes.md).
+**Price, value, and what to buy** (local vs API, the Topaz sub-vs-per-use call, provider ranking):
+[docs/economics.md](./docs/economics.md).
 
 **The local-vs-cloud rule of thumb at moderate volume (30 min-3 h/month):** classic/GAN
 upscaling is far cheaper local (unlimited on the 5090). Diffusion 4K is too slow locally for
@@ -73,6 +75,7 @@ docs/
   image-upscalers.md       the image benchmark
   methodology.md           how to benchmark upscalers on synthetic input (reproducible)
   recipes.md               exact, copy-pasteable settings per model
+  economics.md             price x quality, local-vs-API break-even, the Topaz buy decision
 data/
   registry-schema.json     JSON Schema for a tool record
   tools.json               the machine-readable tool registry (tables derive from this)

@@ -7,6 +7,17 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is date-anchored: a `MINOR` bump means new tools or a re-run of the
 methodology, a `PATCH` bump means corrections and re-verification of existing entries.
 
+## [0.3.0] - 2026-06-16
+
+### Added
+- `docs/economics.md`: the price-and-value layer. Cost models compared (own hardware, subscription,
+  per-use, credits), verified provider price ranking (video $/min, image $/100), local-vs-API
+  break-even at moderate volume, the Topaz buy decision (verdict: no annual sub at this volume),
+  explicit local + API recommendations, and a pricing outlook.
+- Fleet economics: with a 2x RTX 5090 + 1x RTX 4090 render fleet run overnight (~600 GPU-hours/mo),
+  even 4K diffusion fits locally (~$8-46 electricity vs $90-540 cloud), flipping the cloud from
+  mandatory to overflow. Topaz subscription prices re-verified against the official page.
+
 ## [0.2.4] - 2026-06-16
 
 ### Changed
