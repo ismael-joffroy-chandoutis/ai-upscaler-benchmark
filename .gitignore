@@ -1,0 +1,18 @@
+# Build / rendered output kept locally, not the source of truth
+*.html
+!docs/templates/*.html
+
+# OS / editor cruft
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Working scratch
+/_scratch/
+/tmp/
+*.log
+
+# Large sample media (link or describe instead of committing)
+/assets/samples/*
+!/assets/samples/.gitkeep

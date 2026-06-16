@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: "AI Upscaler Benchmark for Generative Video and Image"
+message: "If you use this benchmark, please cite it."
+type: dataset
+authors:
+  - family-names: "Joffroy Chandoutis"
+    given-names: "Ismaël"
+abstract: >-
+  A continuously updated, source-cited benchmark of video and image upscalers
+  for AI-generated footage, comparing local (RTX 5090 class) and API solutions
+  across the quality, cost and speed trade-off. Scope: ~720p generative input
+  from models such as LTX-2.3, Wan 2.2, Veo 3.1, Seedance 2.0 and Kling, upscaled
+  to 1080p and 4K.
+keywords:
+  - upscaling
+  - super-resolution
+  - generative video
+  - generative image
+  - benchmark
+  - Topaz
+  - SeedVR2
+  - SUPIR
+  - RTX 5090
+license: CC-BY-NC-ND-4.0
+version: "0.2.3"
+date-released: "2026-06-16"

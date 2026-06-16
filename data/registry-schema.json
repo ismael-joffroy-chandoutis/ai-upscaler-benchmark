@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ismaeljoffroychandoutis/ai-upscaler-benchmark/data/registry-schema.json",
+  "title": "Upscaler tool registry entry",
+  "description": "One record per upscaling tool/model/endpoint. The Markdown comparison tables are generated from an array of these records, so updating the benchmark means editing data, not prose.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "vendor", "domain", "type", "last_verified", "confidence"],
+  "properties": {
+    "id": { "type": "string", "description": "kebab-case stable id, e.g. topaz-starlight" },
+    "name": { "type": "string" },
+    "vendor": { "type": "string" },
+    "domain": { "type": "string", "enum": ["video", "image", "both"] },
+    "type": { "type": "string", "enum": ["local", "api", "hybrid"] },
+    "category": {
+      "type": "string",
+      "description": "Algorithm family",
+      "enum": ["gan", "transformer", "diffusion", "one-step-diffusion", "interpolation", "hybrid", "unknown"]
+    },
+    "openness": { "type": "string", "enum": ["open-weights", "open-source", "source-available", "closed", "unknown"] },
+    "license": { "type": "string", "description": "SPDX id or short label, or 'proprietary'" },
+    "models": { "type": "array", "items": { "type": "string" }, "description": "Named model variants" },
+    "input_max": { "type": "string", "description": "e.g. '4K', 'unbounded (tiled)'" },
+    "output_max": { "type": "string", "description": "e.g. '4K', '8K', '16x'" },
+    "vram_gb": { "type": ["number", "null"], "description": "Approx peak VRAM at the benchmarked setting; null if unknown" },
+    "fits_5090_32gb": { "type": ["boolean", "null"] },
+    "speed": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": { "type": ["number", "null"] },
+        "unit": { "type": "string", "description": "e.g. 'sec/frame', 'frames/sec', 'min per sec of 4K', 'sec/image'" },
+        "gpu": { "type": "string", "description": "GPU the figure was measured on" },
+        "source": { "type": "string", "format": "uri" }
+      }
+    },
+    "price": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model": { "type": "string", "enum": ["free", "perpetual", "subscription", "per-use", "credits", "unknown"] },
+        "value": { "type": ["number", "null"] },
+        "unit": { "type": "string", "description": "e.g. 'USD/min of 4K output', 'USD/image', 'USD one-time', 'USD/month'" },
+        "source": { "type": "string", "format": "uri" }
+      }
+    },
+    "ai_gen_suitability": { "type": "string", "enum": ["high", "medium", "low", "unknown"] },
+    "ai_gen_note": { "type": "string", "description": "One line on behaviour with synthetic 720p input" },
+    "pareto_tag": { "type": "string", "enum": ["quality-tier", "balanced", "cheap-fast"] },
+    "use_when": { "type": "string" },
+    "avoid_when": { "type": "string" },
+    "sources": { "type": "array", "items": { "type": "string", "format": "uri" } },
+    "last_verified": { "type": "string", "format": "date" },
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+    "notes": { "type": "string" }
+  }
+}

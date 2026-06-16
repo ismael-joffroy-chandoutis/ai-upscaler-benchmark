@@ -1,0 +1,62 @@
+{
+  "_meta": {
+    "version": "0.2.3",
+    "last_updated": "2026-06-16",
+    "purpose": "On-device measured speed and VRAM on the reference RTX 5090. This is the layer no public benchmark publishes. Numbers here are MEASURED, not inferred.",
+    "machine": {
+      "name": "NOMAD (pc-nomade, Tailscale 100.82.222.123)",
+      "gpu": "NVIDIA GeForce RTX 5090, 32 GB GDDR7, compute capability 12.0 (Blackwell)",
+      "driver": "596.21",
+      "os": "Windows"
+    },
+    "environment": {
+      "runtime": "ComfyUI venv (C:/pinokio/api/comfy.git/app/env)",
+      "torch": "2.7.0+cu128",
+      "cuda": "12.8",
+      "loader": "spandrel ModelLoader (the same path ComfyUI uses)"
+    },
+    "method": {
+      "input": "synthetic 1280x720 random tensor (speed and VRAM are content-independent for conv upscalers; quality is NOT assessed here)",
+      "timing": "median of 5 forward passes after 1 warmup, torch.cuda.synchronize around each",
+      "vram": "torch.cuda.max_memory_allocated after reset_peak_memory_stats",
+      "tiling": "none (full-frame); output is native x4",
+      "note_resolution": "x4 of 720p = 5120x2880, which overshoots 4K (3840x2160). A true 720p->4K (downscale after) is slightly cheaper; 720p->1080p via tiling/resize is much faster. These are the eager full-frame x4 numbers.",
+      "script": "scripts/bench_upscale.py"
+    }
+  },
+  "measurements": [
+    {"tool": "RealESRGAN_x4plus", "category": "gan", "dtype": "fp32", "in_res": "1280x720", "out_res": "5120x2880", "scale": 4, "sec_per_frame": 1.1416, "fps": 0.88, "peak_vram_gb": 15.36, "date": "2026-06-16"},
+    {"tool": "RealESRGAN_x4plus", "category": "gan", "dtype": "fp16", "in_res": "1280x720", "out_res": "5120x2880", "scale": 4, "sec_per_frame": 0.5858, "fps": 1.71, "peak_vram_gb": 7.68, "date": "2026-06-16"},
+    {"tool": "4x-UltraSharp", "category": "gan", "dtype": "fp32", "in_res": "1280x720", "out_res": "5120x2880", "scale": 4, "sec_per_frame": 1.148, "fps": 0.87, "peak_vram_gb": 15.36, "date": "2026-06-16"},
+    {"tool": "4x-UltraSharp", "category": "gan", "dtype": "fp16", "in_res": "1280x720", "out_res": "5120x2880", "scale": 4, "sec_per_frame": 0.586, "fps": 1.71, "peak_vram_gb": 7.68, "date": "2026-06-16"},
+    {"tool": "RealESRGAN_x4plus_anime_6B", "category": "gan", "dtype": "fp32", "in_res": "1280x720", "out_res": "5120x2880", "scale": 4, "sec_per_frame": 0.3751, "fps": 2.67, "peak_vram_gb": 15.31, "date": "2026-06-16"},
+    {"tool": "RealESRGAN_x4plus_anime_6B", "category": "gan", "dtype": "fp16", "in_res": "1280x720", "out_res": "5120x2880", "scale": 4, "sec_per_frame": 0.1894, "fps": 5.28, "peak_vram_gb": 7.65, "date": "2026-06-16"},
+
+    {"tool": "SeedVR2-3B-fp8", "category": "diffusion", "target": "1080p", "in_res": "1280x720", "out_res": "1920x1080", "batch": 9, "config": "sageattn3, no tiling/offload", "frames": 9, "total_sec": 85.1, "fps": 0.11, "peak_vram_gb": 31.4, "note": "VAE decode ~73s of 85s dominates; DiT upscale ~2s; near the 32 GB ceiling", "date": "2026-06-16"},
+    {"tool": "SeedVR2-3B-fp8", "category": "diffusion", "target": "4K", "in_res": "1280x720", "out_res": "3840x2160", "batch": 9, "config": "decode tiled only", "frames": 9, "total_sec": null, "fps": null, "peak_vram_gb": null, "note": "OOM > 32 GB at batch 9 even with decode tiling (VAE encode inflation blew up)", "date": "2026-06-16"},
+    {"tool": "SeedVR2-3B-fp8", "category": "diffusion", "target": "4K", "in_res": "1280x720", "out_res": "3840x2160", "batch": 1, "config": "vae encode+decode tiled, blocks_to_swap 16, dit_offload_device cpu", "frames": 9, "total_sec": 69.7, "fps": 0.13, "peak_vram_gb": 9.0, "note": "4K FITS in ~9 GB and is efficient with batch 1 + tiling + offload", "date": "2026-06-16"},
+    {"tool": "SeedVR2-7B-fp8", "category": "diffusion", "target": "1080p", "in_res": "1280x720", "out_res": "1920x1080", "batch": 5, "config": "blocks_to_swap 16, dit_offload_device cpu, sageattn3", "frames": 9, "total_sec": 25.7, "fps": 0.35, "peak_vram_gb": 25.5, "note": "7B at batch 5 + offload is FASTER than 3B at batch 9 (batching dominates, not model size)", "date": "2026-06-16"},
+
+    {"tool": "FlashVSR-plus-tiny", "category": "one-step-diffusion", "target": "1440p (x2)", "in_res": "1280x720", "out_res": "2560x1440", "scale": 2, "mode": "tiny", "attention": "sage", "frames": 25, "total_sec": 31.2, "fps": 0.80, "peak_vram_gb": 31.0, "note": "WORKS; near the 32GB ceiling; wall includes model load; FlashVSR needs >=21 frames", "date": "2026-06-16"},
+    {"tool": "FlashVSR-plus-tiny", "category": "one-step-diffusion", "target": "2880p (x4, 4K-class)", "in_res": "1280x720", "out_res": "5120x2880", "scale": 4, "mode": "tiny", "frames": 25, "total_sec": null, "fps": null, "peak_vram_gb": null, "note": "BLOCKED on 32GB: OOM without tiling; the tiled-dit and full paths hit a FlashVSR_plus repo bug (UnboundLocalError temp_name); tiny-long+tiled-vae maxes 32GB (142s) but produced no output. 4x impractical on 32GB with this build.", "date": "2026-06-16"},
+
+    {"tool": "Topaz-Proteus", "category": "gan", "target": "1080p", "in_res": "1280x720", "out_res": "1920x1080", "model": "prob-4", "frames": 100, "fps": 15.0, "peak_vram_gb": 1.77, "note": "Topaz classic via the local tvai ffmpeg CLI (-f null), steady-state on a 100-frame clip (load amortized). VRAM-light.", "date": "2026-06-16"},
+    {"tool": "Topaz-Proteus", "category": "gan", "target": "4K", "in_res": "1280x720", "out_res": "3840x2160", "model": "prob-4", "frames": 100, "fps": 7.3, "peak_vram_gb": 2.7, "note": "Confirms the community ~4.7-7 fps @4x. Far faster and lighter than the diffusion tier.", "date": "2026-06-16"},
+    {"tool": "Topaz-classic (Iris/Gaia)", "category": "gan", "target": "4K", "in_res": "1280x720", "out_res": "3840x2160", "model": "iris-3 / ghq-5", "frames": 25, "fps": 2.7, "peak_vram_gb": 2.7, "note": "Iris/Gaia 25-frame (load-included ~2.7-3.0 fps); same featherweight VRAM class. Starlight DIFFUSION is NOT measurable via the tvai ffmpeg CLI (needs Neuroserver). Auth runs offline from cached auth.tpz despite cancelled subscriptions.", "date": "2026-06-16"}
+  ],
+
+  "insights": [
+    "SeedVR2 throughput on the 5090 is dominated by VAE-decode batching, not model size or target resolution: decoding a 9-frame batch in one shot (~73s) is the bottleneck, while small batches + VAE tiling decode far faster.",
+    "Counterintuitive measured result: 3B fp8 1080p batch 9 = 0.11 fps / 31.4 GB, but 3B fp8 4K batch 1 (tiled + offload) = 0.13 fps / 9 GB, and 7B fp8 1080p batch 5 (offload) = 0.35 fps / 25.5 GB. The efficient path is small batch + VAE tiling + block-swap with --dit_offload_device cpu.",
+    "32 GB is the binding constraint at large temporal batches: 3B fp8 batch 9 nearly maxes the card at 1080p and OOMs at 4K. Use batch 1-5 + tiling + offload for 4K.",
+    "fp16 doubles speed and halves VRAM vs fp32 for the ESRGAN/GAN tier (free win).",
+    "All SeedVR2 runs: SageAttention 3 + Flash Attention + Triton active (Blackwell-optimized), torch 2.7+cu128, on the 9-frame synthetic 720p clip. Times are end-to-end inference (load + encode + DiT + decode + post).",
+    "FlashVSR (FlashVSR_plus build, isolated venv torch 2.9+cu128, SageAttention) on the 5090: tiny x2 (720p->1440p) works at ~0.80 fps near the 32GB ceiling, but x4 (720p->2880p, 4K-class) is blocked, OOM without tiling and the tiled-dit / full paths hit repo bugs. The marketed '~17 fps on A100' does not translate to anything near real-time at these settings. FlashVSR requires >= 21 input frames (streaming window).",
+    "Topaz classic (Proteus/Iris/Gaia) on the 5090 via the local tvai ffmpeg CLI: steady-state Proteus = 15 fps at 1080p and 7.3 fps at 4K, peak VRAM only ~1.8-2.7 GB. That is roughly 20-100x faster and 4-15x lighter than the diffusion tier, and confirms the community ~4.7-7 fps@4x. The classic-vs-diffusion gap is the central practical trade-off: classic is near-interactive and featherweight but only sharpens; diffusion rebuilds detail but is overnight-slow and VRAM-bound. Topaz Starlight (diffusion) was not measurable via this CLI (needs Neuroserver)."
+  ],
+  "pending": [
+    "SeedVR2 + FlashVSR DONE (FlashVSR x4 blocked by OOM/repo bugs on 32GB; tiny x2 works). Remaining diffusion: SUPIR, CCSR, Clarity; plus SeedVR2 7B at 4K and fp16 variants.",
+    "Quality assessment on real AI-generated 720p frames (LTX/Wan/Veo/Seedance/Kling), separate from these throughput/VRAM numbers.",
+    "SeedVR2 measured via the node's inference_cli.py on a 9-frame synthetic 720p clip (sageattn_3); per-run logs kept on NOMAD (sv_*.log)."
+  ]
+}
