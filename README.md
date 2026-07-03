@@ -120,3 +120,5 @@ See [LICENSE.md](./LICENSE.md). To cite, see [CITATION.cff](./CITATION.cff).
 
 Maintained by Ismaël Joffroy Chandoutis. Contributions of verified measurements (especially
 real RTX 5090 figures) and corrections to flagged items are welcome via issues.
+
+By [Ismaël Joffroy Chandoutis](https://ismaeljoffroychandoutis.com).
