@@ -1,3 +1,5 @@
+**English** · [Français](README.fr.md)
+
 # AI Upscaler Benchmark, for generative video and image
 
 A continuously updated, source-cited comparison of video and image upscalers for
@@ -69,7 +71,8 @@ hero shots, cloud for 4K at volume.
 ## Repository layout
 
 ```
-README.md                  this file
+README.md                  this file (English)
+README.fr.md                this file (French)
 docs/
   video-upscalers.md       the video benchmark
   image-upscalers.md       the image benchmark
