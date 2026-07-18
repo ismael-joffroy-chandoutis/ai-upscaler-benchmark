@@ -4,7 +4,7 @@
     "last_updated": "2026-06-16",
     "purpose": "On-device measured speed and VRAM on the reference RTX 5090. This is the layer no public benchmark publishes. Numbers here are MEASURED, not inferred.",
     "machine": {
-      "name": "NOMAD (pc-nomade, Tailscale 100.82.222.123)",
+      "name": "NOMAD (pc-nomade, RTX 5090)",
       "gpu": "NVIDIA GeForce RTX 5090, 32 GB GDDR7, compute capability 12.0 (Blackwell)",
       "driver": "596.21",
       "os": "Windows"
